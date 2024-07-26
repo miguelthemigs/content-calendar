@@ -1,7 +1,8 @@
 package com.example.content_calendar.controller;
 
 import com.example.content_calendar.model.Content;
-import com.example.content_calendar.repository.ContentCollectionRepository;
+import com.example.content_calendar.model.Status;
+import com.example.content_calendar.repository.ContentRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,9 +20,9 @@ import java.util.List;
 // Controller: Handles HTTP requests and delegates tasks to the service layer.
 
 public class ContentController  { // controller accepts requests and returns a response
-    private final ContentCollectionRepository repository;
+    private final ContentRepository repository;
     @Autowired // we are doing dependency injection, because the constructor depends on repository (annotation optional)
-    public ContentController(ContentCollectionRepository contentCollectionRepository) {
+    public ContentController(ContentRepository contentCollectionRepository) {
         this.repository = contentCollectionRepository;
     }
 
@@ -56,6 +57,16 @@ public class ContentController  { // controller accepts requests and returns a r
         if (repository.existsById(id)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Content not found");
         }
-        repository.delete(id);
+        repository.deleteById(id);
+    }
+
+    @GetMapping("/filter/{keyword}")
+    public List<Content> findByTitle(@PathVariable String keyword){
+        return repository.findAllByTitleContains(keyword);
+    }
+
+    @GetMapping("/filter/status/{status}")
+    public List<Content> findByStatus(@PathVariable String status){
+        return repository.listByStatus(Status.valueOf(status));
     }
 }

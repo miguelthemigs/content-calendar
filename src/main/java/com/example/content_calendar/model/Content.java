@@ -1,9 +1,12 @@
 package com.example.content_calendar.model;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 
-public record Content(Integer id,
+// This is a entity class that represents a content in the system
+public record Content(@Id
+                      Integer id,
                       @NotBlank
                       String title,
                       String description,
